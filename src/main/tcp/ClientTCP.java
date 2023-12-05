@@ -1,5 +1,7 @@
 package tcp;
 
+import key.PrivateKey;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -10,7 +12,9 @@ public class ClientTCP {
 
     public static void main(String[] args) {
 
-        Socket socket;
+        PrivateKey privateKey = new PrivateKey();
+
+        /*Socket socket;
 
         try {
             socket = new Socket("localhost", port);
@@ -22,7 +26,7 @@ public class ClientTCP {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public static void traitements(BufferedReader in, PrintStream out) {

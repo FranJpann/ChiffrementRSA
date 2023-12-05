@@ -29,8 +29,6 @@ public class ServeurTCP extends Thread{
 
   public void run() {
     try {
-      String message = "";
-
       System.out.println("Connexion avec : "+socket.getInetAddress());
 
       InputStream in = socket.getInputStream();

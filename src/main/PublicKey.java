@@ -2,9 +2,20 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class PublicKey {
+
+    // p et q grands entiers premiers
+    // p != q
     private BigInteger p;
     private BigInteger q;
+
+    // n = p x q
     private BigInteger n;
+
+    // m -> indice euler, m = (p-1) x (q-1)
+    private BigInteger m;
+
+    // e -> exposant public
+    private BigInteger e;
 
     public BigInteger getP() {
         return p;
@@ -26,8 +37,6 @@ public class PublicKey {
         return e;
     }
 
-    private BigInteger m;
-    private BigInteger e;
     PublicKey(){
         this.p=BigInteger.probablePrime(2048, new Random());
         this.q=this.p.nextProbablePrime();

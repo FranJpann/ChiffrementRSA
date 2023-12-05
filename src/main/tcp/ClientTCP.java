@@ -11,8 +11,6 @@ public class ClientTCP {
     public static void main(String[] args) {
 
         Socket socket;
-        DataInputStream userInput;
-        PrintStream theOutputStream;
 
         try {
             socket = new Socket("localhost", port);

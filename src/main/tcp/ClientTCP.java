@@ -12,9 +12,7 @@ public class ClientTCP {
 
     public static void main(String[] args) {
 
-        PrivateKey privateKey = new PrivateKey();
-
-        /*Socket socket;
+        Socket socket;
 
         try {
             socket = new Socket("localhost", port);
@@ -26,7 +24,7 @@ public class ClientTCP {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public static void traitements(BufferedReader in, PrintStream out) {

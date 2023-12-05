@@ -5,6 +5,27 @@ public class PublicKey {
     private BigInteger p;
     private BigInteger q;
     private BigInteger n;
+
+    public BigInteger getP() {
+        return p;
+    }
+
+    public BigInteger getQ() {
+        return q;
+    }
+
+    public BigInteger getN() {
+        return n;
+    }
+
+    public BigInteger getM() {
+        return m;
+    }
+
+    public BigInteger getE() {
+        return e;
+    }
+
     private BigInteger m;
     private BigInteger e;
     PublicKey(){

@@ -1,9 +1,6 @@
 package tcp;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -41,13 +38,22 @@ public class ServeurTCP extends Thread{
       BufferedReader input = new BufferedReader(
               new InputStreamReader(in));
       PrintStream out = new PrintStream(socket.getOutputStream());
-      message = input.readLine();
 
-      System.out.println(message);
+      traitements(input, out);
 
       socket.close();
     }catch (Exception e){
       e.printStackTrace();
+    }
+  }
+
+  public void traitements(BufferedReader in, PrintStream out) {
+    try {
+      String message = in.readLine();
+      System.out.println(message);
+      out.println(message);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 }

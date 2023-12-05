@@ -1,9 +1,6 @@
 package tcp;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -23,10 +20,22 @@ public class ClientTCP {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintStream out = new PrintStream(socket.getOutputStream());
 
-            out.println("test");
+            traitements(in, out);
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void traitements(BufferedReader in, PrintStream out) {
+        // On envoie au serveur tcp
+        out.println("test");
+
+        // On recoit du serveur tcp
+        try{
+            System.out.println(in.readLine());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

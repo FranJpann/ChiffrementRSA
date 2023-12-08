@@ -8,21 +8,10 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class ClientTCP extends TCP{
-
-    private int port;
-    private String adresse;
-    private Socket socket;
+public class ClientTCP extends TCP {
 
     public ClientTCP(String adresse, int port) {
-        this.adresse = adresse;
-        this.port = port;
-
-        try{
-            socket = new Socket(adresse, port);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        super(adresse, port);
     }
 
     public void traitement() {

@@ -9,10 +9,9 @@ import java.net.Socket;
 public class ClientTCP {
 
     final static int port = 9632;
+    static Socket socket;
 
     public static void main(String[] args) {
-
-        Socket socket;
 
         try {
             socket = new Socket("localhost", port);

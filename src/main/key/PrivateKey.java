@@ -40,7 +40,7 @@ public class PrivateKey {
         this.u = algoEuclide(e, m, e.subtract(m.multiply(e.divide(m))), BigInteger.valueOf(1), BigInteger.valueOf(0), BigInteger.valueOf(1).subtract(BigInteger.valueOf(0).multiply(e.divide(m))));
     }
 
-    public BigInteger algoEuclide(BigInteger a, BigInteger b, BigInteger r, BigInteger u0, BigInteger u1, BigInteger u) {
+    private BigInteger algoEuclide(BigInteger a, BigInteger b, BigInteger r, BigInteger u0, BigInteger u1, BigInteger u) {
         if (r.equals(BigInteger.valueOf(0))){
             BigInteger k = BigInteger.valueOf(-1);
             BigInteger uFinal = u1;
@@ -53,5 +53,9 @@ public class PrivateKey {
         else {
             return algoEuclide(b, r, b.subtract(r.multiply(b.divide(r))), u1, u, u1.subtract(u.multiply(b.divide(r))));
         }
+    }
+
+    public String getKey() {
+        return "("+this.n+","+this.u+")";
     }
 }

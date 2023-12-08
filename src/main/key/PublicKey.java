@@ -58,4 +58,7 @@ public class PublicKey {
         }
     }
 
+    public String getKey() {
+        return "("+this.n+","+this.e+")";
+    }
 }

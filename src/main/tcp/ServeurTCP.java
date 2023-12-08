@@ -4,9 +4,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ServeurTCP extends Thread{
+public class ServeurTCP extends Thread {
   final static int port = 9632;
-  private Socket socket;
+  private final Socket socket;
 
   public static void main(String[] args) {
     try {

@@ -5,7 +5,6 @@ import java.util.Random;
 
 public class PublicKey {
 
-
     private BigInteger p;
     private BigInteger q;
     private BigInteger n;

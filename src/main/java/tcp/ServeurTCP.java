@@ -1,5 +1,6 @@
 package tcp;
 
+import config.ConfigProperties;
 import jdk.jshell.execution.Util;
 
 import java.io.*;
@@ -8,11 +9,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServeurTCP extends Thread{
-    private final int port;
     private Socket socket;
 
-    public ServeurTCP(Socket socket, int port) {
-        this.port = port;
+    public ServeurTCP(Socket socket) {
         this.socket = socket;
     }
 
@@ -37,7 +36,9 @@ public class ServeurTCP extends Thread{
 
     public static void main(String[] args) {
         try {
-            int port = 9632;
+            ConfigProperties config = new ConfigProperties();
+            int port = Integer.parseInt(config.getConfigValue("server.port"));
+
             ServerSocket socketServeur = new ServerSocket(port);
             String adresse = Inet4Address.getLocalHost().getHostAddress();
 
@@ -46,7 +47,7 @@ public class ServeurTCP extends Thread{
 
             while (true) {
                 Socket socketClient = socketServeur.accept();
-                ServeurTCP serveurTCP = new ServeurTCP(socketClient, port);
+                ServeurTCP serveurTCP = new ServeurTCP(socketClient);
                 serveurTCP.start();
             }
         } catch (Exception e) {

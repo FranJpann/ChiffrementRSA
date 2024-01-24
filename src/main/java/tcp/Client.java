@@ -27,7 +27,7 @@ public class Client {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintStream out = new PrintStream(socket.getOutputStream());
 
-            out.println("test");
+            out.println(message);
 
             socket.close();
         } catch (IOException e) {

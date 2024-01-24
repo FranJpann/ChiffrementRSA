@@ -7,11 +7,12 @@ import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ServeurTCP extends TCP {
-    private final Socket socket;
+public class ServeurTCP extends Thread{
+    private final int port;
+    private Socket socket;
 
     public ServeurTCP(Socket socket, int port) {
-        super("localhost", port);
+        this.port = port;
         this.socket = socket;
     }
 
@@ -19,22 +20,16 @@ public class ServeurTCP extends TCP {
         try {
             System.out.println("Connexion avec : " + socket.getInetAddress());
 
-            traitement();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void traitement() {
-        try {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
-            //PrintStream out = new PrintStream(socket.getOutputStream());
+            PrintStream out = new PrintStream(socket.getOutputStream());
 
-            System.out.println("Client : " + Utils.getMessage(in));
+            String response = in.readLine();
+
+            System.out.println("Client : " + response);
 
             socket.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

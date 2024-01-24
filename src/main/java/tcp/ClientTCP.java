@@ -1,5 +1,6 @@
 package tcp;
 
+import config.ConfigProperties;
 import jdk.jshell.execution.Util;
 import key.PrivateKey;
 import key.PublicKey;
@@ -14,6 +15,9 @@ public class ClientTCP {
     private final String adress;
     private final int port;
     private Socket socket;
+
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
 
     public ClientTCP(String adress, int port) {
         this.adress = adress;
@@ -37,8 +41,11 @@ public class ClientTCP {
     }
 
     public static void main(String[] args) {
-        String adresse = "localhost";
-        int port = 9632;
+
+        ConfigProperties configProperties = new ConfigProperties();
+
+        String adresse = configProperties.getConfigValue("server.adress");
+        int port = Integer.parseInt(configProperties.getConfigValue("server.port"));;
 
         new ClientTCP(adresse, port).traitement();
     }

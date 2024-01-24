@@ -1,5 +1,7 @@
 package tcp;
 
+import jdk.jshell.execution.Util;
+
 import java.io.*;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
@@ -9,7 +11,7 @@ public class ServeurTCP extends TCP {
     private final Socket socket;
 
     public ServeurTCP(Socket socket, int port) {
-        super("", port);
+        super("localhost", port);
         this.socket = socket;
     }
 
@@ -19,22 +21,23 @@ public class ServeurTCP extends TCP {
 
             traitement();
 
-            socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void traitement() {
-    try{
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(socket.getInputStream()));
-        PrintStream out = new PrintStream(socket.getOutputStream());
+        try {
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(socket.getInputStream()));
+            //PrintStream out = new PrintStream(socket.getOutputStream());
 
-        out.println(Utils.getMessage(in));
-    }catch (Exception e) {
+            System.out.println("Client : " + Utils.getMessage(in));
 
-    }
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

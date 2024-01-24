@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class PublicKey {
 
-    private BigInteger p;
+    private final BigInteger p;
     private BigInteger q;
     private BigInteger n;
     private BigInteger m;
@@ -31,7 +31,7 @@ public class PublicKey {
         return e;
     }
 
-    PublicKey(){
+    public PublicKey(){
 
         // p et q grands entiers premiers
         // p != q
@@ -58,6 +58,6 @@ public class PublicKey {
     }
 
     public String getKey() {
-        return "("+this.n+","+this.e+")";
+        return "{n:"+this.n.toString()+",e:"+this.e.toString()+"}";
     }
 }

@@ -56,6 +56,6 @@ public class PrivateKey {
     }
 
     public String getKey() {
-        return "("+this.n+","+this.u+")";
+        return "{n:"+this.n.toString()+",u:"+this.u.toString()+"}";
     }
 }

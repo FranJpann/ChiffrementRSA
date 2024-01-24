@@ -10,20 +10,20 @@ public abstract class TCP extends Thread{
     public String adresse;
     public int port;
     public Socket socket;
+    public PublicKey publicKey;
+    public PrivateKey privateKey;
 
     public TCP(String adresse, int port) {
             this.adresse = adresse;
             this.port = port;
 
-            try{
-                socket = new Socket(adresse, port);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            genKey();
     }
 
-    public PublicKey publicKey;
-    public PrivateKey privateKey;
+    public void genKey() {
+        this.publicKey = new PublicKey();
+        this.privateKey = new PrivateKey();
+    }
 
     public abstract void traitement();
 }

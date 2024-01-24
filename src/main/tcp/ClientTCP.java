@@ -12,15 +12,28 @@ public class ClientTCP extends TCP {
 
     public ClientTCP(String adresse, int port) {
         super(adresse, port);
+
+        try{
+            socket = new Socket(adresse, port);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void traitement() {
+
         try{
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintStream out = new PrintStream(socket.getOutputStream());
 
-            Utils.sendMessage(out, "message from client");
-            System.out.println(Utils.getMessage(in));
+            //System.out.println(privateKey.getKey());
+
+            Utils.sendMessage(out, "test");
+
+            //Utils.sendMessage(out, privateKey.getKey());
+            //System.out.println(Utils.getMessage(in));
+
+            socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

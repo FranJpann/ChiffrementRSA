@@ -3,6 +3,8 @@ package tcp;
 import chiffrement.Chiffrement;
 import chiffrement.Dechiffrement;
 import config.ConfigProperties;
+import key.PrivateKey;
+import key.PublicKey;
 import utils.Utils;
 
 import java.io.BufferedReader;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Map.entry;
 import static utils.Utils.convertirChaineEnPublicKey;
 
 public class Serveur extends Thread {
@@ -24,6 +27,10 @@ public class Serveur extends Thread {
     private int port;
     private String adress;
     private ServerSocket serverSocket;
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
+
+    private Map<String, Map<String, Integer>> keys;
 
     public Serveur() {
         ConfigProperties configProperties = new ConfigProperties();
@@ -38,6 +45,16 @@ public class Serveur extends Thread {
 
         System.out.println("Lancement du serveur sur le port " + port);
         System.out.println("Adresse publique : " + adress);
+
+        keys = new HashMap<>();
+    }
+
+    public void addKeys(String name, int publicKey, int privateKey) {
+        this.keys.put(name, Map.ofEntries(entry("publicKey", publicKey), entry("privateKey", privateKey)));
+    }
+
+    public Map<String, Integer> getKeys(String name) {
+        return keys.get(name);
     }
 
     public void run() {

@@ -48,12 +48,7 @@ public class Alice {
 
             //Alice fait son message et le chiffre
             String aliceMessage = "ça sort de jouer";
-
             Chiffrement messageChiffre = new Chiffrement(aliceMessage,publicKey.getE(),publicKey.getN());
-
-
-
-
 
 
             socket.close();
@@ -84,6 +79,5 @@ public class Alice {
         String adresse = "172.20.42.84";
         int port = 9632;
 
-        new tcp.ClientTCP(adresse, port).traitement();
     }
 }

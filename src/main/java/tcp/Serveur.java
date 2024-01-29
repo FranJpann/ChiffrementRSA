@@ -43,7 +43,6 @@ public class Serveur extends Thread {
     }
 
     private class ServeurRunnable extends Thread {
-
         Socket client;
 
         public ServeurRunnable(Socket client) {
@@ -61,6 +60,10 @@ public class Serveur extends Thread {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        public void Bob(){
+
         }
     }
 }

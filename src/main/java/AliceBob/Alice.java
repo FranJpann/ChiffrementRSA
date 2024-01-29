@@ -1,35 +1,39 @@
-package tcp;
+package AliceBob;
 
-import chiffrement.Chiffrement;
-import chiffrement.Dechiffrement;
+
 import key.PrivateKey;
 import key.PublicKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
+import java.math.BigInteger;
 import java.net.Socket;
 
-public class Client {
+import chiffrement.*;
 
-    String name;
+public class Alice {
+
+    private final String adress;
+    private final int port;
+    private Socket socket;
+
     private PrivateKey privateKey;
+
     private PublicKey publicKey;
 
-    Serveur serveur = new Serveur();
+    private PublicKey BobKey;
 
-    public Client(String name, String adress, int port) {
-        this.name = name;
+    public Alice(String adress, int port) {
         this.adress = adress;
         this.port = port;
-        serveur.start();
+        this.privateKey = new PrivateKey();
+        this.publicKey = new PublicKey();
     }
 
-    public void Alice() throws IOException {
-        try {
+    public void script() {
+
+        try{
             socket = new Socket(adress, port);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -44,28 +48,10 @@ public class Client {
 
             //Alice fait son message et le chiffre
             String aliceMessage = "ça sort de jouer";
-            Chiffrement messageChiffre = new Chiffrement(aliceMessage, publicKey.getE(), publicKey.getN());
-
-            out.println(Arrays.toString(messageChiffre.getChiffre()));
+            Chiffrement messageChiffre = new Chiffrement(aliceMessage,publicKey.getE(),publicKey.getN());
 
 
-            // Alice recoit le message de Bob et le dechiffre
-            List<BigInteger> encryptedMessageParts = new ArrayList<>();
-            String line;
-            while ((line = in.readLine()) != null) {
-                // Assuming each line represents a BigInteger in string format
-                BigInteger part = new BigInteger(line);
-                encryptedMessageParts.add(part);
-            }
-
-            BigInteger[] encryptedMessageArray = encryptedMessageParts.toArray(new BigInteger[0]);
-
-            Dechiffrement dechiffrement = new Dechiffrement(privateKey.getU(), privateKey.getN(), encryptedMessageArray);
-
-            System.out.println(dechiffrement);
-
-
-
+            socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -87,5 +73,11 @@ public class Client {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static void main(String[] args) {
+        String adresse = "172.20.42.84";
+        int port = 9632;
+
     }
 }

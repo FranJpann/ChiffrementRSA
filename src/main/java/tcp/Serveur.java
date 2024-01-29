@@ -1,9 +1,6 @@
 package tcp;
 
 import config.ConfigProperties;
-import key.PrivateKey;
-import key.PublicKey;
-import utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,17 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Map.entry;
-
-public class Serveur {
+public class Serveur extends Thread {
 
     private int port;
     private String adress;
     private ServerSocket serverSocket;
-    private PublicKey publicKey;
-    private PrivateKey privateKey;
-
-    private Map<String, Map<String, Integer>> keys;
 
     public Serveur() {
         ConfigProperties configProperties = new ConfigProperties();
@@ -42,25 +33,38 @@ public class Serveur {
 
         System.out.println("Lancement du serveur sur le port " + port);
         System.out.println("Adresse publique : " + adress);
-
-        keys = new HashMap<>();
-    }
-
-    public void addKeys(String name, int publicKey, int privateKey) {
-        this.keys.put(name, Map.ofEntries(entry("publicKey", publicKey), entry("privateKey", privateKey)));
-    }
-
-    public Map<String, Integer> getKeys(String name) {
-        return keys.get(name);
     }
 
     public void run() {
         try {
             while (true) {
                 Socket client = serverSocket.accept();
+                new ServeurRunnable(client).start();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private class ServeurRunnable extends Thread {
+
+        Socket client;
+
+        public ServeurRunnable(Socket client) {
+            this.client = client;
+        }
+
+        public void run() {
+            try {
+                System.out.println("Connexion avec : " + client.getInetAddress());
+
+                
+
+                client.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

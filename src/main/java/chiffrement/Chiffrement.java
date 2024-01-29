@@ -1,3 +1,5 @@
+package chiffrement;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
@@ -9,8 +11,8 @@ public class Chiffrement {
         return chiffre;
     }
 
-    Chiffrement(String str, BigInteger e, BigInteger n){
-        System.out.println("Chiffrement -> Begin");
+    public Chiffrement(String str, BigInteger e, BigInteger n){
+        System.out.println("chiffrement.Chiffrement -> Begin");
         this.chiffre=new BigInteger[str.length()];
         for(int i=0;i<str.length();i++){
             chiffre[i]=BigInteger.valueOf((int)str.charAt(i)).modPow(e,n);

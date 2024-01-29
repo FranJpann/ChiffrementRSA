@@ -1,9 +1,14 @@
 package utils;
 
+import key.PublicKey;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.math.BigInteger;
 import java.net.Socket;
 
 public class Utils {
@@ -26,5 +31,23 @@ public class Utils {
                 new InputStreamReader(client.getInputStream()));
 
         return in.readLine();
+    }
+
+    public static PublicKey convertirChaineEnPublicKey(String chaine) throws JSONException {
+        try {
+
+            JSONObject obj = new JSONObject(chaine);
+
+            String nStr = obj.getString("n");
+            String eStr = obj.getString("e");
+
+            BigInteger n = new BigInteger(nStr);
+            BigInteger e = new BigInteger(eStr);
+
+            return new PublicKey(n, e);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

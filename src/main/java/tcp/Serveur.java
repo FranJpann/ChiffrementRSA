@@ -1,6 +1,9 @@
 package tcp;
 
+import chiffrement.Chiffrement;
+import chiffrement.Dechiffrement;
 import config.ConfigProperties;
+import utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static utils.Utils.convertirChaineEnPublicKey;
 
 public class Serveur extends Thread {
 
@@ -39,32 +44,52 @@ public class Serveur extends Thread {
         try {
             while (true) {
                 Socket client = serverSocket.accept();
-                new ServeurRunnable(client).start();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private class ServeurRunnable extends Thread {
+    public void Alice() {
+        try {
+            Socket socket = new Socket(adress, port);
 
-        Socket client;
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintStream out = new PrintStream(socket.getOutputStream());
 
-        public ServeurRunnable(Socket client) {
-            this.client = client;
-        }
+            //Alice recoit la clé publique de Bob
+            String bobKeyString = in.readLine();
+            BobKey = Utils.convertirChaineEnPublicKey(bobKeyString);
 
-        public void run() {
-            try {
-                System.out.println("Connexion avec : " + client.getInetAddress());
+            //Alice envoit sa clé publique
+            out.println(this.publicKey.getKey());
 
-                
+            //Alice fait son message et le chiffre
+            String aliceMessage = "ça sort de jouer";
+            Chiffrement messageChiffre = new Chiffrement(aliceMessage, publicKey.getE(), publicKey.getN());
 
-                client.close();
+            out.println(Arrays.toString(messageChiffre.getChiffre()));
 
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            // Alice recoit le message de Bob et le dechiffre
+            List<BigInteger> encryptedMessageParts = new ArrayList<>();
+            String line;
+            while ((line = in.readLine()) != null) {
+                // Assuming each line represents a BigInteger in string format
+                BigInteger part = new BigInteger(line);
+                encryptedMessageParts.add(part);
             }
+
+            BigInteger[] encryptedMessageArray = encryptedMessageParts.toArray(new BigInteger[0]);
+
+            Dechiffrement dechiffrement = new Dechiffrement(privateKey.getU(), privateKey.getN(), encryptedMessageArray);
+
+            System.out.println(dechiffrement);
+
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

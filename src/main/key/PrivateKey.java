@@ -11,51 +11,45 @@ public class PrivateKey {
     private BigInteger m;
     private BigInteger e;
     private BigInteger u;
+    private BigInteger v;
 
-    public PrivateKey() {
-
-        // p et q grands entiers premiers
-        // p != q
-        this.p = BigInteger.probablePrime(2048, new Random());
-        this.q = this.p.nextProbablePrime();
-
-        // n = q x p
-        this.n = this.q.multiply(this.p);
-
-        // m est égal au nombre d'entiers naturels <= n
-        this.m = (this.p.subtract(BigInteger.valueOf(1)).multiply(this.q.subtract(BigInteger.valueOf(1))));
-
-        // e un nombre aléatoire premier à m
-        this.e = new BigInteger(512, new Random());
-        if (this.e.mod(BigInteger.valueOf(2)).equals(BigInteger.valueOf(0))) {
-            this.e = this.e.subtract(BigInteger.valueOf(1));
+    public PrivateKey(BigInteger e, BigInteger m,BigInteger n) {
+        this.e = e;
+        this.m = m;
+        this.n=n;
+        if(e.equals(BigInteger.valueOf(0))){
+            this.u = BigInteger.valueOf(1);
         }
-        while (!this.m.gcd(this.e).equals(BigInteger.valueOf(1))) {
-            this.e = new BigInteger(512, new Random());
-            if (this.e.mod(BigInteger.valueOf(2)).equals(BigInteger.valueOf(0))) {
-                this.e = this.e.subtract(BigInteger.valueOf(1));
-            }
+        else if(m.equals(BigInteger.valueOf(0))){
+            this.u = BigInteger.valueOf(0);
         }
-
-        this.u = algoEuclide(e, m, e.subtract(m.multiply(e.divide(m))), BigInteger.valueOf(1), BigInteger.valueOf(0), BigInteger.valueOf(1).subtract(BigInteger.valueOf(0).multiply(e.divide(m))));
+        else{
+            this.u = algoEuclide(e,BigInteger.valueOf(1),BigInteger.valueOf(0),m,BigInteger.valueOf(0),BigInteger.valueOf(1),m);
+        }
     }
 
-    private BigInteger algoEuclide(BigInteger a, BigInteger b, BigInteger r, BigInteger u0, BigInteger u1, BigInteger u) {
-        if (r.equals(BigInteger.valueOf(0))){
-            BigInteger k = BigInteger.valueOf(-1);
-            BigInteger uFinal = u1;
-            while(uFinal.compareTo(BigInteger.valueOf(2))<0 || u.compareTo(uFinal)<0) {
-                uFinal = uFinal.subtract(k.multiply(u));
-                k = k.subtract(BigInteger.valueOf(1));
+    private BigInteger algoEuclide(BigInteger r, BigInteger u, BigInteger v, BigInteger old_r, BigInteger old_u, BigInteger old_v,BigInteger m) {
+        if(r.equals(BigInteger.valueOf(0))){
+            if(u.compareTo(BigInteger.valueOf(2))>0 && u.compareTo(m)<0){
+                this.v=v;
+                return old_u;
             }
-            return uFinal;
+            else{
+                BigInteger k= BigInteger.valueOf(-1);
+                while (old_u.compareTo(BigInteger.valueOf(2))<1 && old_u.compareTo(m)<0){
+                    old_u=old_u.subtract(k.multiply(m));
+                    k=k.subtract(BigInteger.valueOf(1));
+                }
+                this.v=v;
+                return old_u;
+            }
         }
-        else {
-            return algoEuclide(b, r, b.subtract(r.multiply(b.divide(r))), u1, u, u1.subtract(u.multiply(b.divide(r))));
+        else{
+            return algoEuclide(old_r.subtract(old_r.divideAndRemainder(r)[0].multiply(r)),old_u.subtract(old_r.divideAndRemainder(r)[0].multiply(u)),old_v.subtract(old_r.divideAndRemainder(r)[0].multiply(v)),r,u,v,m);
         }
     }
 
     public String getKey() {
-        return "{n:"+this.n.toString()+",u:"+this.u.toString()+"}";
+        return this.n.toString()+","+this.u.toString();
     }
 }

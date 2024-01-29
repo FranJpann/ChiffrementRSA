@@ -2,6 +2,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
+import key.*;
+
 public class Chiffrement {
     private BigInteger[] chiffre;
 
@@ -10,17 +12,19 @@ public class Chiffrement {
     }
 
     Chiffrement(String str, BigInteger e, BigInteger n){
-        System.out.println("Chiffrement -> Begin");
         this.chiffre=new BigInteger[str.length()];
         for(int i=0;i<str.length();i++){
-            chiffre[i]=BigInteger.valueOf((int)str.charAt(i)).modPow(e,n);
+            this.chiffre[i]=BigInteger.valueOf((int)str.charAt(i)).modPow(e,n);
         }
     }
 
 
 
     public static void main(String[] args) {
-        Chiffrement test=new Chiffrement("Ceci est un test",new BigInteger(50,new Random()),new BigInteger(50,new Random()));
-        System.out.println(Arrays.toString(test.chiffre));
+        PublicKey pb = new PublicKey();
+        PrivateKey pk = new PrivateKey(pb.getE(),pb.getM(),pb.getN());
+        Chiffrement test=new Chiffrement("Ceci est un test",pb.getE(),pb.getN());
+        System.out.println(test.chiffre[0]);
+        new Dechifrrement(new BigInteger(pk.getKey().split(",")[1]),new BigInteger(pk.getKey().split(",")[0]),test.chiffre);
     }
 }

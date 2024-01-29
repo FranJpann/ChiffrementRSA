@@ -12,23 +12,23 @@ public class PublicKey {
     private BigInteger e;
 
     public BigInteger getP() {
-        return p;
+        return this.p;
     }
 
     public BigInteger getQ() {
-        return q;
+        return this.q;
     }
 
     public BigInteger getN() {
-        return n;
+        return this.n;
     }
 
     public BigInteger getM() {
-        return m;
+        return this.m;
     }
 
     public BigInteger getE() {
-        return e;
+        return this.e;
     }
 
     public PublicKey(){
@@ -42,14 +42,14 @@ public class PublicKey {
         this.n=this.q.multiply(this.p);
 
         // m est égal au nombre d'entiers naturels <= n
-        this.m=(this.p.subtract(BigInteger.valueOf(1)).multiply(this.q.subtract(BigInteger.valueOf(1))));
+        this.m=(this.p.subtract(BigInteger.valueOf(1))).multiply((this.q.subtract(BigInteger.valueOf(1))));
 
         // e un nombre aléatoire premier à m
         this.e=new BigInteger(512,new Random());
         if(this.e.mod(BigInteger.valueOf(2)).equals(BigInteger.valueOf(0))){
             this.e=this.e.subtract(BigInteger.valueOf(1));
         }
-        while(!this.m.gcd(this.e).equals(BigInteger.valueOf(1))){
+        while(!(this.m.gcd(this.e).equals(BigInteger.valueOf(1)))){
             this.e=new BigInteger(512,new Random());
             if(this.e.mod(BigInteger.valueOf(2)).equals(BigInteger.valueOf(0))){
                 this.e=this.e.subtract(BigInteger.valueOf(1));

@@ -11,14 +11,9 @@ import java.net.Socket;
 
 public class Client {
 
-    String name;
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
-
     Serveur serveur = new Serveur();
 
-    public Client(String name) {
-        this.name = name;
-        serveur.start();
+    public Client() {
+        serveur = new Serveur();
     }
 }

@@ -15,23 +15,10 @@ public class Client {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
+    Serveur serveur = new Serveur();
+
     public Client(String name) {
         this.name = name;
-        new Serveur().start();
-    }
-
-    public void sendMessage(String adress, int port, String message) {
-        try{
-            Socket socket = new Socket(adress, port);
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintStream out = new PrintStream(socket.getOutputStream());
-
-            out.println("test");
-
-            socket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        serveur.start();
     }
 }

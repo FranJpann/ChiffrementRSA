@@ -54,13 +54,7 @@ public class Serveur extends Thread {
             try {
                 System.out.println("Connexion avec : " + client.getInetAddress());
 
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(client.getInputStream()));
-                PrintStream out = new PrintStream(client.getOutputStream());
-
-                String response = in.readLine();
-
-                System.out.println("Client : " + response);
+                
 
                 client.close();
 

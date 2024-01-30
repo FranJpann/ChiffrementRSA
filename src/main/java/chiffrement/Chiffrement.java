@@ -1,3 +1,6 @@
+package java.chiffrement;
+
+import java.key.PublicKey;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
@@ -25,6 +28,6 @@ public class Chiffrement {
         PrivateKey pk = new PrivateKey(pb.getE(),pb.getM(),pb.getN());
         Chiffrement test=new Chiffrement("Ceci est un test",pb.getE(),pb.getN());
         System.out.println(test.chiffre[0]);
-        new Dechifrrement(new BigInteger(pk.getKey().split(",")[1]),new BigInteger(pk.getKey().split(",")[0]),test.chiffre);
+        new Dechiffrement(new BigInteger(pk.getKey().split(",")[1]),new BigInteger(pk.getKey().split(",")[0]),test.chiffre);
     }
 }

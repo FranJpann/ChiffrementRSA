@@ -1,4 +1,4 @@
-package key;
+package java.key;
 
 import java.math.BigInteger;
 import java.util.Random;
@@ -55,11 +55,6 @@ public class PublicKey {
                 this.e=this.e.subtract(BigInteger.valueOf(1));
             }
         }
-    }
-
-    public PublicKey( BigInteger n, BigInteger e){
-        this.n = n;
-        this.e = e;
     }
 
     public String getKey() {

@@ -57,6 +57,11 @@ public class PublicKey {
         }
     }
 
+    public PublicKey(BigInteger n, BigInteger e) {
+        this.n = n;
+        this.e = e;
+    }
+
     public String getKey() {
         return "{n:"+this.n.toString()+",e:"+this.e.toString()+"}";
     }

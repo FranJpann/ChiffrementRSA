@@ -1,11 +1,11 @@
-package java.chiffrement;
+package chiffrement;
 
 import java.math.BigInteger;
 
 public class Dechiffrement {
     private BigInteger n;
     private BigInteger u;
-    public Dechiffrement(BigInteger u,BigInteger n,BigInteger code[]){
+    public Dechiffrement(BigInteger u, BigInteger n, BigInteger code[]){
 
         String texteConvert="";
         for(int i=0;i<code.length;i++){

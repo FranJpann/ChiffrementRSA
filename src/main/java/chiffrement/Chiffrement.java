@@ -14,7 +14,7 @@ public class Chiffrement {
         return chiffre;
     }
 
-    Chiffrement(String str, BigInteger e, BigInteger n){
+    public Chiffrement(String str, BigInteger e, BigInteger n){
         this.chiffre=new BigInteger[str.length()];
         for(int i=0;i<str.length();i++){
             this.chiffre[i]=BigInteger.valueOf((int)str.charAt(i)).modPow(e,n);
@@ -23,11 +23,11 @@ public class Chiffrement {
 
 
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         PublicKey pb = new PublicKey();
         PrivateKey pk = new PrivateKey(pb.getE(),pb.getM(),pb.getN());
         Chiffrement test=new Chiffrement("Ceci est un test",pb.getE(),pb.getN());
         System.out.println(test.chiffre[0]);
         new Dechiffrement(new BigInteger(pk.getKey().split(",")[1]),new BigInteger(pk.getKey().split(",")[0]),test.chiffre);
-    }
+    }*/
 }

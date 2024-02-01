@@ -1,38 +1,35 @@
 package tcp;
 
-import chiffrement.Chiffrement;
 import chiffrement.Dechiffrement;
 import config.ConfigProperties;
-import key.PrivateKey;
-import key.PublicKey;
+import key.*;
 import utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.key.PublicKey;
+import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Map.entry;
-import static utils.Utils.convertirChaineEnPublicKey;
+import java.util.*;
 
 public class Serveur extends Thread {
 
+    private String name;
     private int port;
     private String adress;
     private ServerSocket serverSocket;
-    private PublicKey publicKey;
+    private java.key.PublicKey publicKey;
     private PrivateKey privateKey;
 
-    private Map<String, Map<String, Integer>> keys;
+    private Map<String, java.key.PublicKey> publicKeys;
 
-    public Serveur() {
+    public Serveur(String name) {
+        this.name = name;
+
         ConfigProperties configProperties = new ConfigProperties();
 
         this.port = Integer.parseInt(configProperties.getConfigValue("server.port"));
@@ -46,47 +43,45 @@ public class Serveur extends Thread {
         System.out.println("Lancement du serveur sur le port " + port);
         System.out.println("Adresse publique : " + adress);
 
-        keys = new HashMap<>();
+        publicKeys = new HashMap<>();
     }
 
-    public void addKeys(String name, int publicKey, int privateKey) {
-        this.keys.put(name, Map.ofEntries(entry("publicKey", publicKey), entry("privateKey", privateKey)));
+    public void addPublicKey(String name, java.key.PublicKey publicKey) {
+        this.publicKeys.put(name, publicKey);
     }
 
-    public Map<String, Integer> getKeys(String name) {
-        return keys.get(name);
+    public PublicKey getPublicKey(String name) {
+        return publicKeys.get(name);
     }
 
     public void run() {
         try {
             while (true) {
                 Socket client = serverSocket.accept();
+                if(name.equals("Alice")) Alice(client);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void Alice() {
+    public void Alice(Socket socket) {
         try {
-            Socket socket = new Socket(adress, port);
-
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintStream out = new PrintStream(socket.getOutputStream());
 
-            //Alice recoit la clé publique de Bob
-            String bobKeyString = in.readLine();
-            BobKey = Utils.convertirChaineEnPublicKey(bobKeyString);
+            // Alice récupère la clé de Bob
+            String bobKeys = in.readLine();
+            publicKeys.put("Bob", Utils.convertStringToPublicKey(bobKeys));
 
-            //Alice envoit sa clé publique
+            // Alice envoit sa clé publique
             out.println(this.publicKey.getKey());
 
             //Alice fait son message et le chiffre
             String aliceMessage = "ça sort de jouer";
-            Chiffrement messageChiffre = new Chiffrement(aliceMessage, publicKey.getE(), publicKey.getN());
+            java.chiffrement.Chiffrement messageChiffre = new java.chiffrement.Chiffrement(aliceMessage, publicKey.getE(), publicKey.getN());
 
             out.println(Arrays.toString(messageChiffre.getChiffre()));
-
 
             // Alice recoit le message de Bob et le dechiffre
             List<BigInteger> encryptedMessageParts = new ArrayList<>();
@@ -103,10 +98,12 @@ public class Serveur extends Thread {
 
             System.out.println(dechiffrement);
 
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void Bob(Socket socket) {
+
     }
 }

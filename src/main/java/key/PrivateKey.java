@@ -1,7 +1,6 @@
-package java.key;
+package key;
 
 import java.math.BigInteger;
-import java.util.Random;
 
 public class PrivateKey {
 
@@ -16,15 +15,15 @@ public class PrivateKey {
     public PrivateKey(BigInteger e, BigInteger m,BigInteger n) {
         this.e = e;
         this.m = m;
-        this.n=n;
+        this.setN(n);
         if(e.equals(BigInteger.valueOf(0))){
-            this.u = BigInteger.valueOf(1);
+            this.setU(BigInteger.valueOf(1));
         }
         else if(m.equals(BigInteger.valueOf(0))){
-            this.u = BigInteger.valueOf(0);
+            this.setU(BigInteger.valueOf(0));
         }
         else{
-            this.u = algoEuclide(e,BigInteger.valueOf(1),BigInteger.valueOf(0),m,BigInteger.valueOf(0),BigInteger.valueOf(1),m);
+            this.setU(algoEuclide(e,BigInteger.valueOf(1),BigInteger.valueOf(0),m,BigInteger.valueOf(0),BigInteger.valueOf(1),m));
         }
     }
 
@@ -50,6 +49,14 @@ public class PrivateKey {
     }
 
     public String getKey() {
-        return this.n.toString()+","+this.u.toString();
+        return this.getN().toString()+","+ this.getU().toString();
+    }
+
+    public BigInteger getN() {
+        return n;
+    }
+
+    public BigInteger getU() {
+        return u;
     }
 }

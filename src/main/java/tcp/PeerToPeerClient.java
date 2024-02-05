@@ -71,7 +71,10 @@ public class PeerToPeerClient {
                     return;
                 }
                 else if(response.get("topic").equals("encryptedMessage")) {
-                    System.out.println("là faut décrypter");
+                    BigInteger[] encryptedMessage = Utils.convertJSONEncryptedMessageToListBigInteger(response);
+                    String decryptedMessage = Chiffrement.dechiffrer(privateKey, encryptedMessage);
+
+                    System.out.println(decryptedMessage);
                 }
                 else {
                     System.out.println("Topic inconnu");

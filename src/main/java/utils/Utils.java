@@ -28,4 +28,20 @@ public class Utils {
             return null;
         }
     }
+
+    public static BigInteger[] convertJSONEncryptedMessageToListBigInteger(JSONObject obj) {
+        try {
+            int nbBigIntegers = 0;
+            for (int i=0; obj.has("BigInteger"+i); i++) nbBigIntegers++;
+            BigInteger[] bigIntegers = new BigInteger[nbBigIntegers];
+            for (int i=0; obj.has("BigInteger"+i); i++) {
+                BigInteger bigInteger = new BigInteger(obj.getString("BigInteger"+i));
+                bigIntegers[i] = bigInteger;
+            }
+            return bigIntegers;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

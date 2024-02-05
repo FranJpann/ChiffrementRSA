@@ -1,5 +1,6 @@
 package tcp;
 
+import chiffrement.Chiffrement;
 import key.PrivateKey;
 import key.PublicKey;
 import org.json.JSONObject;
@@ -7,6 +8,7 @@ import utils.Utils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,10 +28,8 @@ public class PeerToPeerClient {
     public PeerToPeerClient(String name) {
         this.name = name;
         publicKey = new PublicKey();
-        //privateKey = new PrivateKey();
+        privateKey = new PrivateKey(publicKey);
         storedPublicKeys = new HashMap<>();
-
-        Scanner scanner = new Scanner(System.in);
 
         // Démarrer le serveur pour recevoir des messages
         new Thread(() -> startReceiver()).start();
@@ -59,13 +59,17 @@ public class PeerToPeerClient {
             String message = dis.readUTF();
             JSONObject response = new JSONObject(message);
 
-            if(response.get("topic").equals("key") && !storedPublicKeys.containsKey((String) response.get("name"))){
+            if(response.get("topic").equals("firstKey") && !storedPublicKeys.containsKey((String) response.get("name"))){
                     storedPublicKeys.put((String) response.get("name"), Utils.convertJSONToPublicKey(response));
                     System.out.println("PublicKey reçue ("+response.get("name")+")");
-                    sendPublicKey((String) response.get("adress"), (Integer) response.get("port"));
+                    sendPublicKey((String) response.get("adress"), Integer.parseInt((String) response.get("port")), false);
+            }
+            else if(response.get("topic").equals("secondKey") &&  !storedPublicKeys.containsKey((String) response.get("name"))) {
+                storedPublicKeys.put((String) response.get("name"), Utils.convertJSONToPublicKey(response));
+                System.out.println("PublicKey reçue ("+response.get("name")+")");
             }
             else if(response.get("topic") == "encryptedMessage") {
-                System.out.println("là faut décrypter:" + response.get("encryptedMessage"));
+                System.out.println("là faut décrypter:\n" + response.get("encryptedMessage"));
             }
             else {
                 System.out.println("Topic inconnu");
@@ -76,13 +80,16 @@ public class PeerToPeerClient {
         }
     }
 
-    public void sendPublicKey(String host, int port) {
+    public void sendPublicKey(String host, int port, boolean first) {
         try {
             Socket socket = new Socket(host, port);
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            String topic;
+            if(first) topic = "firstKey";
+            else topic = "secondKey";
 
-            dos.writeUTF("{\"adress\":"+Inet4Address.getLocalHost().getHostAddress()+ ",\"port\":"+this.PORT+","+
-                    "\"name\":\""+name+"\", \"topic\":\"key\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
+            dos.writeUTF("{\"adress\":"+Inet4Address.getLocalHost().getHostAddress()+ ",\"port\":\""+this.PORT+"\","+
+                    "\"name\":\""+name+"\", \"topic\":\""+topic+"\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
             dos.flush();
             socket.close();
         } catch (Exception e) {
@@ -102,27 +109,63 @@ public class PeerToPeerClient {
         }
     }
 
-    private void sendMessage(String host, int port, String message) {
-        try {
-            Socket socket = new Socket(host, port);
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+    public void sendMessage(String host, int port, String message, String nomDestinataire) {
+        if(storedPublicKeys.containsKey(nomDestinataire)){
+            try {
+                Socket socket = new Socket(host, port);
+                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            dos.writeUTF(message);
-            dos.flush();
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+                PublicKey destinatairePublicKey = storedPublicKeys.get(nomDestinataire);
+                BigInteger[] encryptedMessage = Chiffrement.chiffrer(destinatairePublicKey, message);
+
+                StringBuilder encryptedJSON = new StringBuilder("{\"adress\":" + Inet4Address.getLocalHost().getHostAddress() + ",\"port\":\"" + this.PORT + "\"," +
+                        "\"name\":\"" + name + "\", \"topic\":\"encryptedMessage\"");
+
+                int i=0;
+                for(BigInteger bigInteger: encryptedMessage){
+                    encryptedJSON.append(", BigInteger").append(i).append(":").append(bigInteger.toString());
+                    i++;
+                }
+                encryptedJSON.append("}");
+
+                dos.writeUTF(encryptedJSON.toString());
+                dos.flush();
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            System.out.println("Le message n'a pas pu être envoyé (mauvais destinataire)");
         }
     }
 
-    private void sendMessage(Socket socket, String message) {
-        try {
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+    public void sendMessage(Socket socket, String message, String nomDestinataire) {
+        if(storedPublicKeys.containsKey(nomDestinataire)){
+            try {
+                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            dos.writeUTF(message);
-            dos.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
+                PublicKey destinatairePublicKey = storedPublicKeys.get(nomDestinataire);
+                BigInteger[] encryptedMessage = Chiffrement.chiffrer(destinatairePublicKey, message);
+
+                StringBuilder encryptedJSON = new StringBuilder("{\"adress\":" + Inet4Address.getLocalHost().getHostAddress() + ",\"port\":\"" + this.PORT + "\"," +
+                        "\"name\":\"" + name + "\", \"topic\":\"encryptedMessage\"");
+
+                int i=0;
+                for(BigInteger bigInteger: encryptedMessage){
+                    encryptedJSON.append(", BigInteger").append(i).append(":").append(bigInteger.toString());
+                    i++;
+                }
+                encryptedJSON.append("}");
+
+                dos.writeUTF(encryptedJSON.toString());
+                dos.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            System.out.println("Le message n'a pas pu être envoyé (mauvais destinataire)");
         }
     }
 }

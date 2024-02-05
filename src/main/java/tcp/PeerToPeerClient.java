@@ -33,12 +33,6 @@ public class PeerToPeerClient {
 
         // Démarrer le serveur pour recevoir des messages
         new Thread(() -> startReceiver()).start();
-
-        // Envoyer des messages en tant que Sender
-        while (true) {
-            String message = scanner.nextLine();
-            sendMessage("localhost", PORT, message);
-        }
     }
 
     private void startReceiver() {
@@ -51,8 +45,7 @@ public class PeerToPeerClient {
                 Socket socket = serverSocket.accept();
                 System.out.println("Nouvelle connexion entrante!");
 
-                // Nouveau thread pour gérer la réception de messages
-                new Thread(() -> handleIncomingMessages(socket)).start();
+                handleIncomingMessages(socket);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,16 +59,18 @@ public class PeerToPeerClient {
             String message = dis.readUTF();
             JSONObject response = new JSONObject(message);
 
-            if(response.get("topic") == "key" && !storedPublicKeys.containsKey((String) response.get("name"))){
+            if(response.get("topic").equals("key") && !storedPublicKeys.containsKey((String) response.get("name"))){
                     storedPublicKeys.put((String) response.get("name"), Utils.convertJSONToPublicKey(response));
-                    System.out.println("PublicKey reçue ("+response.get("name")+ " " + storedPublicKeys.get(response.get("name")) + ")");
+                    System.out.println("PublicKey reçue ("+response.get("name")+")");
                     sendPublicKey(socket);
             }
             else if(response.get("topic") == "encryptedMessage") {
                 System.out.println("là faut décrypter:" + response.get("encryptedMessage"));
             }
-
-            socket.close();
+            else {
+                System.out.println("Topic inconnu");
+                socket.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

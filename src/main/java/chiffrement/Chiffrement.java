@@ -1,6 +1,5 @@
-package java.chiffrement;
+package chiffrement;
 
-import java.key.PublicKey;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;

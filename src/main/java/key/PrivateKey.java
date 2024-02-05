@@ -12,10 +12,10 @@ public class PrivateKey {
     private BigInteger u;
     private BigInteger v;
 
-    public PrivateKey(BigInteger e, BigInteger m,BigInteger n) {
-        this.e = e;
-        this.m = m;
-        this.n = n;
+    public PrivateKey(PublicKey publicKey) {
+        this.e = publicKey.getE();
+        this.m = publicKey.getM();
+        this.n = publicKey.getN();
         if(e.equals(BigInteger.valueOf(0))){
             this.u = BigInteger.valueOf(1);
         }
@@ -46,10 +46,6 @@ public class PrivateKey {
         else{
             return algoEuclide(old_r.subtract(old_r.divideAndRemainder(r)[0].multiply(r)),old_u.subtract(old_r.divideAndRemainder(r)[0].multiply(u)),old_v.subtract(old_r.divideAndRemainder(r)[0].multiply(v)),r,u,v,m);
         }
-    }
-
-    public String getKey() {
-        return this.getN().toString()+","+ this.getU().toString();
     }
 
     public BigInteger getN() {

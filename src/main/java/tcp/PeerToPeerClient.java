@@ -62,7 +62,7 @@ public class PeerToPeerClient {
             if(response.get("topic").equals("key") && !storedPublicKeys.containsKey((String) response.get("name"))){
                     storedPublicKeys.put((String) response.get("name"), Utils.convertJSONToPublicKey(response));
                     System.out.println("PublicKey reçue ("+response.get("name")+")");
-                    sendPublicKey(socket);
+                    sendPublicKey((String) response.get("adress"), (Integer) response.get("port"));
             }
             else if(response.get("topic") == "encryptedMessage") {
                 System.out.println("là faut décrypter:" + response.get("encryptedMessage"));
@@ -81,7 +81,7 @@ public class PeerToPeerClient {
             Socket socket = new Socket(host, port);
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            dos.writeUTF("{\"adress\":"+Inet4Address.getLocalHost().getHostAddress()+ ",\"port\":\""+this.PORT+"\","+
+            dos.writeUTF("{\"adress\":"+Inet4Address.getLocalHost().getHostAddress()+ ",\"port\":"+this.PORT+","+
                     "\"name\":\""+name+"\", \"topic\":\"key\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
             dos.flush();
             socket.close();

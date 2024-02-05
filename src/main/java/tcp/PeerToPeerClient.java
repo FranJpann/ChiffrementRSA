@@ -81,7 +81,7 @@ public class PeerToPeerClient {
             Socket socket = new Socket(host, port);
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            dos.writeUTF("{\"name\":"+name+", \"topic\":\"key\", \"n\":"+publicKey.getN()+", \"e\":"+publicKey.getE()+"}");
+            dos.writeUTF("{\"name\":\""+name+"\", \"topic\":\"key\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
             dos.flush();
             socket.close();
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class PeerToPeerClient {
         try {
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            dos.writeUTF("{\"name\":"+name+", \"topic\":\"key\", \"n\":"+publicKey.getN()+", \"e\":"+publicKey.getE()+"}");
+            dos.writeUTF("{\"name\":\""+name+"\", \"topic\":\"key\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
             dos.flush();
         } catch (Exception e) {
             e.printStackTrace();

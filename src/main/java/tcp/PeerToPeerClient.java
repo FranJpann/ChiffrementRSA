@@ -95,7 +95,6 @@ public class PeerToPeerClient {
 
             dos.writeUTF("{\"name\":"+name+", \"topic\":\"key\", \"n\":"+publicKey.getN()+", \"e\":"+publicKey.getE()+"}");
             dos.flush();
-            socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,7 +119,6 @@ public class PeerToPeerClient {
 
             dos.writeUTF(message);
             dos.flush();
-            socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

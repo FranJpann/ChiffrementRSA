@@ -65,7 +65,7 @@ public class Serveur extends Thread {
         }
     }
 
-    public void AliceSendMessage(String adresse, int port){
+    public void sendMessage(String adresse, int port){
         Socket socket = new Socket();
         Alice(socket);
     }

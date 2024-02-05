@@ -15,15 +15,15 @@ public class PrivateKey {
     public PrivateKey(BigInteger e, BigInteger m,BigInteger n) {
         this.e = e;
         this.m = m;
-        this.setN(n);
+        this.n = n;
         if(e.equals(BigInteger.valueOf(0))){
-            this.setU(BigInteger.valueOf(1));
+            this.u = BigInteger.valueOf(1);
         }
         else if(m.equals(BigInteger.valueOf(0))){
-            this.setU(BigInteger.valueOf(0));
+            this.u = BigInteger.valueOf(0);
         }
         else{
-            this.setU(algoEuclide(e,BigInteger.valueOf(1),BigInteger.valueOf(0),m,BigInteger.valueOf(0),BigInteger.valueOf(1),m));
+            this.u = algoEuclide(e,BigInteger.valueOf(1),BigInteger.valueOf(0),m,BigInteger.valueOf(0),BigInteger.valueOf(1),m);
         }
     }
 

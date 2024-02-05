@@ -1,6 +1,5 @@
 package script;
 
-import tcp.Client;
 import tcp.PeerToPeerClient;
 
 public class Main {

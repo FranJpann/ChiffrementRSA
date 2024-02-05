@@ -7,4 +7,8 @@ public class Client {
         serveur = new Serveur(name);
         serveur.start();
     }
+
+    public void sendMessage(String adresse, int port){
+        serveur.sendMessage(adresse, port);
+    }
 }

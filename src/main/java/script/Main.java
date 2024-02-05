@@ -1,11 +1,10 @@
 package script;
 
 import tcp.Client;
+import tcp.PeerToPeerClient;
 
 public class Main {
     public static void main(String[] args) {
-        String adresse = "172.20.42.84";
-        int port = 9632;
-        Client Alice = new Client("Alice");
+        PeerToPeerClient peerToPeerClient = new PeerToPeerClient("Alice");
     }
 }

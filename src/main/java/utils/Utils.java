@@ -14,26 +14,6 @@ import java.util.Map;
 
 public class Utils {
 
-    public static void sendMessage(String adresse, int port, String message) {
-        try{
-            Socket socket = new Socket(adresse, port);
-
-            PrintStream out = new PrintStream(socket.getOutputStream());
-            out.println(message);
-
-            socket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String waitForResponse(Socket client) throws IOException {
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(client.getInputStream()));
-
-        return in.readLine();
-    }
-
     public static PublicKey convertJSONToPublicKey(JSONObject obj) {
         try {
             String nStr = obj.getString("n");

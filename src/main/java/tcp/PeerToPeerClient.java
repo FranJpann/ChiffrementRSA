@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class PeerToPeerClient {
-    private static final int PORT = 12345;
+    private final int PORT = 12345;
     private String name;
 
     private PublicKey publicKey;
@@ -81,7 +81,8 @@ public class PeerToPeerClient {
             Socket socket = new Socket(host, port);
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            dos.writeUTF("{\"name\":\""+name+"\", \"topic\":\"key\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
+            dos.writeUTF("{\"adress\":"+Inet4Address.getLocalHost().getHostAddress()+ ",\"port\":\""+this.PORT+"\","+
+                    "\"name\":\""+name+"\", \"topic\":\"key\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
             dos.flush();
             socket.close();
         } catch (Exception e) {
@@ -93,7 +94,8 @@ public class PeerToPeerClient {
         try {
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            dos.writeUTF("{\"name\":\""+name+"\", \"topic\":\"key\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
+            dos.writeUTF("{\"adress\":"+Inet4Address.getLocalHost().getHostAddress()+ ",\"port\":\""+this.PORT+"\","+
+                    "\"name\":\""+name+"\", \"topic\":\"key\", \"n\":\""+publicKey.getN()+"\", \"e\":\""+publicKey.getE()+"\"}");
             dos.flush();
         } catch (Exception e) {
             e.printStackTrace();

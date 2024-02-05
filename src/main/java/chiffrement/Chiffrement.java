@@ -7,26 +7,21 @@ import java.util.Random;
 import key.*;
 
 public class Chiffrement {
-    private BigInteger[] chiffre;
 
-    public BigInteger[] getChiffre() {
+    public static BigInteger[] chiffrer(PublicKey publicKey, String str) {
+        BigInteger[] chiffre = new BigInteger[str.length()];
+        for(int i=0; i<str.length(); i++){
+            chiffre[i] = BigInteger.valueOf((int)str.charAt(i)).modPow(publicKey.getE(),publicKey.getN());
+        }
         return chiffre;
     }
 
-    public Chiffrement(String str, BigInteger e, BigInteger n){
-        this.chiffre=new BigInteger[str.length()];
-        for(int i=0;i<str.length();i++){
-            this.chiffre[i]=BigInteger.valueOf((int)str.charAt(i)).modPow(e,n);
+    public static String dechiffrer(PrivateKey privateKey, BigInteger[] encryptedMessage) {
+        String decryptedMessage = "";
+        for(int i=0; i<encryptedMessage.length; i++){
+            decryptedMessage=decryptedMessage.concat(String.valueOf((char)Integer.parseInt(String.valueOf(encryptedMessage[i]
+                    .modPow(privateKey.getU(), privateKey.getN())))));
         }
+        return decryptedMessage;
     }
-
-
-
-    /*public static void main(String[] args) {
-        PublicKey pb = new PublicKey();
-        PrivateKey pk = new PrivateKey(pb.getE(),pb.getM(),pb.getN());
-        Chiffrement test=new Chiffrement("Ceci est un test",pb.getE(),pb.getN());
-        System.out.println(test.chiffre[0]);
-        new Dechiffrement(new BigInteger(pk.getKey().split(",")[1]),new BigInteger(pk.getKey().split(",")[0]),test.chiffre);
-    }*/
 }

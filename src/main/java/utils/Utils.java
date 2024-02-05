@@ -1,5 +1,6 @@
 package utils;
 
+import key.PublicKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,17 +34,15 @@ public class Utils {
         return in.readLine();
     }
 
-    public static java.key.PublicKey convertStringToPublicKey(String chaine) {
+    public static PublicKey convertJSONToPublicKey(JSONObject obj) {
         try {
-            JSONObject obj = new JSONObject(chaine);
-
             String nStr = obj.getString("n");
             String eStr = obj.getString("e");
 
             BigInteger n = new BigInteger(nStr);
             BigInteger e = new BigInteger(eStr);
 
-            return new java.key.PublicKey(n, e);
+            return new PublicKey(n, e);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

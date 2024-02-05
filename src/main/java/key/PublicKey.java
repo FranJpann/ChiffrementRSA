@@ -1,4 +1,4 @@
-package java.key;
+package key;
 
 import java.math.BigInteger;
 import java.util.Random;

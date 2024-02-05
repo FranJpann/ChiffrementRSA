@@ -1,17 +1,33 @@
 package tcp;
 
+import key.PrivateKey;
+import key.PublicKey;
+import org.json.JSONObject;
+import utils.Utils;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class PeerToPeerClient {
     private static final int PORT = 12345;
     private String name;
 
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
+
+    private Map<String, PublicKey> storedPublicKeys;
+
     public PeerToPeerClient(String name) {
         this.name = name;
+        publicKey = new PublicKey();
+        //privateKey = new PrivateKey();
+        storedPublicKeys = new HashMap<>();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -20,7 +36,6 @@ public class PeerToPeerClient {
 
         // Envoyer des messages en tant que Sender
         while (true) {
-            System.out.print("Vous: ");
             String message = scanner.nextLine();
             sendMessage("localhost", PORT, message);
         }
@@ -29,6 +44,7 @@ public class PeerToPeerClient {
     private void startReceiver() {
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
+            System.out.println(Inet4Address.getLocalHost().getHostAddress()+ ":" +serverSocket.getLocalPort());
             System.out.println("En attente de connexions entrantes...");
 
             while (true) {
@@ -47,12 +63,44 @@ public class PeerToPeerClient {
         try {
             DataInputStream dis = new DataInputStream(socket.getInputStream());
 
-            while (true) {
-                String message = dis.readUTF();
-                System.out.println("Reçu: " + message);
+            String message = dis.readUTF();
+            JSONObject response = new JSONObject(message);
 
-                sendMessage(socket, "bien recu");
+            if(response.get("topic") == "key" && !storedPublicKeys.containsKey((String) response.get("name"))){
+                    storedPublicKeys.put((String) response.get("name"), Utils.convertJSONToPublicKey(response));
+                    System.out.println("PublicKey reçue ("+response.get("name")+ " " + storedPublicKeys.get(response.get("name")) + ")");
+                    sendPublicKey(socket);
             }
+            else if(response.get("topic") == "encryptedMessage") {
+                System.out.println("là faut décrypter:" + response.get("encryptedMessage"));
+            }
+
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendPublicKey(String host, int port) {
+        try {
+            Socket socket = new Socket(host, port);
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
+            dos.writeUTF("{\"name\":"+name+", \"topic\":\"key\", \"n\":"+publicKey.getN()+", \"e\":"+publicKey.getE()+"}");
+            dos.flush();
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendPublicKey(Socket socket) {
+        try {
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
+            dos.writeUTF("{\"name\":"+name+", \"topic\":\"key\", \"n\":"+publicKey.getN()+", \"e\":"+publicKey.getE()+"}");
+            dos.flush();
+            socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

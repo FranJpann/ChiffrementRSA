@@ -149,7 +149,7 @@ public class PeerToPeerClient {
                 else topic = "REencryptedMessage";
 
                 StringBuilder encryptedJSON = new StringBuilder("{\"adress\":" + Inet4Address.getLocalHost().getHostAddress() + ",\"port\":\"" + this.PORT + "\"," +
-                        "\"name\":\"" + name + "\", \""+topic+"\":\"encryptedMessage\"");
+                        "\"name\":\"" + name + "\", \"topic\":\""+topic+"\"");
 
                 int i=0;
                 for(BigInteger bigInteger: encryptedMessage){
@@ -186,7 +186,7 @@ public class PeerToPeerClient {
                 else topic = "REencryptedMessage";
 
                 StringBuilder encryptedJSON = new StringBuilder("{\"adress\":" + Inet4Address.getLocalHost().getHostAddress() + ",\"port\":\"" + this.PORT + "\"," +
-                        "\"name\":\"" + name + "\", \""+ topic +"\":\"encryptedMessage\"");
+                        "\"name\":\"" + name + "\", \"topic\":\""+topic+"\"");
 
                 int i=0;
                 for(BigInteger bigInteger: encryptedMessage){

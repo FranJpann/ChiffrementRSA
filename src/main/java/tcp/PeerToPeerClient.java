@@ -77,7 +77,7 @@ public class PeerToPeerClient {
                     System.out.println(response.get("name") + ": " +decryptedMessage);
 
                     // On rechiffre le message pour le renvoyer
-                    sendMessage((String) response.get("adresse"), Integer.parseInt((String) response.get("port")),
+                    sendMessage((String) response.get("adress"), Integer.parseInt((String) response.get("port")),
                             (String) response.get("name"), decryptedMessage, false);
                 }
                 else if(response.get("topic").equals("REencryptedMessage")) {

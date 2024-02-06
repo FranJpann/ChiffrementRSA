@@ -74,11 +74,24 @@ public class PeerToPeerClient {
                     BigInteger[] encryptedMessage = Utils.convertJSONEncryptedMessageToListBigInteger(response);
                     String decryptedMessage = Chiffrement.dechiffrer(privateKey, encryptedMessage);
 
-                    System.out.println(decryptedMessage);
+                    System.out.println(response.get("name") + ": " +decryptedMessage);
+
+                    // On rechiffre le message pour le renvoyer
+                    sendMessage((String) response.get("adresse"), Integer.parseInt((String) response.get("port")),
+                            (String) response.get("name"), decryptedMessage, false);
+                }
+                else if(response.get("topic").equals("REencryptedMessage")) {
+                    BigInteger[] encryptedMessage = Utils.convertJSONEncryptedMessageToListBigInteger(response);
+                    String decryptedMessage = Chiffrement.dechiffrer(privateKey, encryptedMessage);
+
+                    System.out.println(response.get("name") + ": " +decryptedMessage);
+                    socket.close();
+                    return;
                 }
                 else {
                     System.out.println("Topic inconnu");
                     socket.close();
+                    return;
                 }
             }
 
@@ -91,6 +104,7 @@ public class PeerToPeerClient {
         try {
             Socket socket = new Socket(host, port);
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
             String topic;
             if(first) topic = "firstKey";
             else topic = "secondKey";
@@ -107,6 +121,7 @@ public class PeerToPeerClient {
     public void sendPublicKey(Socket socket, boolean first) {
         try {
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
             String topic;
             if(first) topic = "firstKey";
             else topic = "secondKey";
@@ -119,7 +134,7 @@ public class PeerToPeerClient {
         }
     }
 
-    public void sendMessage(String host, int port, String message, String nomDestinataire) {
+    public void sendMessage(String host, int port, String message, String nomDestinataire, boolean firstMessage) {
         if(storedPublicKeys.containsKey(nomDestinataire)){
             try {
                 Socket socket = new Socket(host, port);
@@ -129,8 +144,12 @@ public class PeerToPeerClient {
                 PublicKey destinatairePublicKey = storedPublicKeys.get(nomDestinataire);
                 BigInteger[] encryptedMessage = Chiffrement.chiffrer(destinatairePublicKey, message);
 
+                String topic;
+                if(firstMessage) topic = "encryptedMessage";
+                else topic = "REencryptedMessage";
+
                 StringBuilder encryptedJSON = new StringBuilder("{\"adress\":" + Inet4Address.getLocalHost().getHostAddress() + ",\"port\":\"" + this.PORT + "\"," +
-                        "\"name\":\"" + name + "\", \"topic\":\"encryptedMessage\"");
+                        "\"name\":\"" + name + "\", \""+topic+"\":\"encryptedMessage\"");
 
                 int i=0;
                 for(BigInteger bigInteger: encryptedMessage){
@@ -153,7 +172,7 @@ public class PeerToPeerClient {
         }
     }
 
-    public void sendMessage(Socket socket, String message, String nomDestinataire) {
+    public void sendMessage(Socket socket, String message, String nomDestinataire, boolean firstMessage) {
         if(storedPublicKeys.containsKey(nomDestinataire)){
             try {
                 DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
@@ -162,8 +181,12 @@ public class PeerToPeerClient {
                 PublicKey destinatairePublicKey = storedPublicKeys.get(nomDestinataire);
                 BigInteger[] encryptedMessage = Chiffrement.chiffrer(destinatairePublicKey, message);
 
+                String topic;
+                if(firstMessage) topic = "encryptedMessage";
+                else topic = "REencryptedMessage";
+
                 StringBuilder encryptedJSON = new StringBuilder("{\"adress\":" + Inet4Address.getLocalHost().getHostAddress() + ",\"port\":\"" + this.PORT + "\"," +
-                        "\"name\":\"" + name + "\", \"topic\":\"encryptedMessage\"");
+                        "\"name\":\"" + name + "\", \""+ topic +"\":\"encryptedMessage\"");
 
                 int i=0;
                 for(BigInteger bigInteger: encryptedMessage){

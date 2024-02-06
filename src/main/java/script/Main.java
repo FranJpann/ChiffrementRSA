@@ -19,7 +19,7 @@ public class Main {
 
         peerToPeerClient.sendPublicKey(socket, true);
         Thread.sleep(3000);
-        peerToPeerClient.sendMessage(socket, "Ceci un message déchiffré", "Bob");
+        peerToPeerClient.sendMessage(socket, "Ceci un message déchiffré", "Bob", true);
     }
 
      /* Exemple d'utilisation du chiffrement / déchiffrement

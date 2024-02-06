@@ -78,7 +78,7 @@ public class PeerToPeerClient {
 
                     // On rechiffre le message pour le renvoyer
                     sendMessage((String) response.get("adress"), Integer.parseInt((String) response.get("port")),
-                            (String) response.get("name"), decryptedMessage, false);
+                            decryptedMessage, (String) response.get("name"), false);
                 }
                 else if(response.get("topic").equals("REencryptedMessage")) {
                     BigInteger[] encryptedMessage = Utils.convertJSONEncryptedMessageToListBigInteger(response);

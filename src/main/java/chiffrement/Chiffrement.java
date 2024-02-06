@@ -8,6 +8,14 @@ import key.*;
 
 public class Chiffrement {
 
+    /* Exemple d'utilisation du chiffrement / déchiffrement
+        PublicKey pb = new PublicKey();
+        PrivateKey pk = new PrivateKey(pb);
+        BigInteger[] messageEncrypted = Chiffrement.chiffrer(pb, "Ceci est un message déchiffré");
+        String decryptedMessage = Chiffrement.dechiffrer(pk, messageEncrypted);
+        System.out.println(decryptedMessage);
+      */
+
     public static BigInteger[] chiffrer(PublicKey publicKey, String str) {
         BigInteger[] chiffre = new BigInteger[str.length()];
         for(int i=0; i<str.length(); i++){
